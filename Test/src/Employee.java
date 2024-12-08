@@ -1,8 +1,6 @@
-public class Employee {
+public class Employee implements Payable {
     private String name;
-
     private double baseSalary;
-
     private JobLevel jobLevel;
 
     public Employee(String name, double baseSalary, JobLevel jobLevel) {
@@ -30,8 +28,6 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee:" + name + "Level:" + jobLevel + "Salary:" + baseSalary;
+        return "Employee: " + name + ", Level: " + jobLevel + ", Salary: " + baseSalary;
     }
-
-
 }
