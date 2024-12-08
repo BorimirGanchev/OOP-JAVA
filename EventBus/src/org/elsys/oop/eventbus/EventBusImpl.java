@@ -16,7 +16,10 @@ public class EventBusImpl implements EventBus {
         if (eventType == null || subscriber == null) {
             throw new IllegalArgumentException("Event type and subscriber cannot be null");
         }
-        subscribers.computeIfAbsent(eventType, k -> new ArrayList<>()).add(subscriber);
+        if (!subscribers.containsKey(eventType)) {
+            subscribers.put(eventType, new ArrayList<Subscriber<?>>());
+        }
+        subscribers.get(eventType).add(subscriber);
     }
 
     @Override
@@ -44,7 +47,10 @@ public class EventBusImpl implements EventBus {
                 typedSubscriber.onEvent(event);
             }
         }
-        eventLogs.computeIfAbsent(event.getClass(), k -> new ArrayList<>()).add(event);
+        if (!eventLogs.containsKey(event.getClass())) {
+            eventLogs.put(event.getClass(), new ArrayList<Event<?>>());
+        }
+        eventLogs.get(event.getClass()).add(event);
     }
 
     @Override
@@ -58,7 +64,7 @@ public class EventBusImpl implements EventBus {
         if (eventType == null || from == null || to == null) {
             throw new IllegalArgumentException("Arguments cannot be null");
         }
-        List<? extends Event<?>> logs = eventLogs.getOrDefault(eventType, Collections.emptyList());
+        List<? extends Event<?>> logs = eventLogs.containsKey(eventType) ? eventLogs.get(eventType) : Collections.emptyList();
         List<Event<?>> filteredLogs = new ArrayList<>();
         for (Event<?> event : logs) {
             if (!event.getTimestamp().isBefore(from) && event.getTimestamp().isBefore(to)) {
@@ -73,6 +79,6 @@ public class EventBusImpl implements EventBus {
         if (eventType == null) {
             throw new IllegalArgumentException("Event type cannot be null");
         }
-        return Collections.unmodifiableList(subscribers.getOrDefault(eventType, Collections.emptyList()));
+        return Collections.unmodifiableList(subscribers.containsKey(eventType) ? subscribers.get(eventType) : Collections.emptyList());
     }
 }
