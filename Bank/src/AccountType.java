@@ -1,0 +1,1 @@
+public enum AccountType { INDIVIDUAL, BUSINESS }

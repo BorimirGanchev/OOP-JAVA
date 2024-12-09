@@ -1,12 +1,35 @@
-public abstract class Transaction {
-    private double amount;
-    private int SourceAccount;
-    private int DestinationAccount;
+public class Transaction {
+    public enum TransactionType { DEPOSIT, WITHDRAWAL, TRANSFER }
 
-    public Transaction(double amount, int sourceAccount, int destinationAccount) {
-        this.amount = amount;
-        SourceAccount = sourceAccount;
-        DestinationAccount = destinationAccount;
+    private TransactionType type;
+    private double amount;
+    private String accountNumber;
+    private String targetAccountNumber;
+
+    public Transaction(TransactionType type, double amount, String accountNumber) {
+        this(type, amount, accountNumber, null);
     }
 
+    public Transaction(TransactionType type, double amount, String accountNumber, String targetAccountNumber) {
+        this.type = type;
+        this.amount = amount;
+        this.accountNumber = accountNumber;
+        this.targetAccountNumber = targetAccountNumber;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getTargetAccountNumber() {
+        return targetAccountNumber;
+    }
 }

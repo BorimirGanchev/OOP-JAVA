@@ -6,7 +6,9 @@ public class Bank {
 
     public Bank() {
         this.accounts = new ArrayList<>();
-        this.transactions = new PriorityQueue<>(new TransactionComparator());
+        this.transactions = new PriorityQueue<>(Comparator.comparing((Transaction t) -> {Account account = getAccountByNumber(t.getAccountNumber());
+            return account.getAccountType() == Account.AccountType.BUSINESS ? 0 : 1;
+        }).thenComparing(t -> transactions.size()));
     }
 
     public void addAccount(Account account) {
@@ -17,25 +19,46 @@ public class Bank {
         transactions.add(transaction);
     }
 
-    public void withdraw(String accountId, double amount) {
-        Transaction transaction = new WithdrawTransaction(accountId, amount);
-        addTransaction(transaction);
+    public void withdraw(String accountNumber, double amount) {
+        addTransaction(new Transaction(Transaction.TransactionType.WITHDRAWAL, amount, accountNumber));
     }
 
-    public void addMoney(String accountId, double amount) {
-        Transaction transaction = new AddMoneyTransaction(accountId, amount);
-        addTransaction(transaction);
+    public void addMoney(String accountNumber, double amount) {
+        addTransaction(new Transaction(Transaction.TransactionType.DEPOSIT, amount, accountNumber));
     }
 
-    public void transfer(String fromAccountId, String toAccountId, double amount) {
-        Transaction transaction = new TransferTransaction(fromAccountId, toAccountId, amount);
-        addTransaction(transaction);
+    public void transfer(String fromAccountNumber, String toAccountNumber, double amount) {
+        addTransaction(new Transaction(Transaction.TransactionType.TRANSFER, amount, fromAccountNumber, toAccountNumber));
     }
 
     public void flush() {
         while (!transactions.isEmpty()) {
             Transaction transaction = transactions.poll();
-            transaction.process(accounts);
+            processTransaction(transaction);
         }
+    }
+
+    private void processTransaction(Transaction transaction) {
+        Account account = getAccountByNumber(transaction.getAccountNumber());
+        switch (transaction.getType()) {
+            case DEPOSIT:
+                account.add(transaction.getAmount());
+                break;
+            case WITHDRAWAL:
+                account.remove(transaction.getAmount());
+                break;
+            case TRANSFER:
+                Account targetAccount = getAccountByNumber(transaction.getTargetAccountNumber());
+                account.remove(transaction.getAmount());
+                targetAccount.add(transaction.getAmount());
+                break;
+        }
+    }
+
+    private Account getAccountByNumber(String accountNumber) {
+        return accounts.stream()
+                .filter(account -> account.getAccountNumber().equals(accountNumber))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
     }
 }
