@@ -1,5 +1,8 @@
-import org.elsys.cardgame.api.*;
-
+import org.elsys.cardgame.api.Card;
+import org.elsys.cardgame.api.Suit;
+import org.elsys.cardgame.api.Rank;
+import org.elsys.cardgame.api.Deck;
+import org.elsys.cardgame.api.Hand;
 import java.util.*;
 import java.util.stream.Collectors;
 
