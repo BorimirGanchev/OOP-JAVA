@@ -4,7 +4,6 @@ import org.elsys.cardgame.api.Rank;
 import org.elsys.cardgame.api.Deck;
 import org.elsys.cardgame.api.Hand;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -61,9 +60,12 @@ public class Main {
     }
 
     private static List<Card> parseCards(String input) {
-        return Arrays.stream(input.split("\\s+"))
-                .map(Main::parseCard)
-                .collect(Collectors.toList());
+        List<Card> cards = new ArrayList<>();
+        String[] cardStrings = input.split("\\s+");
+        for (String cardStr : cardStrings) {
+            cards.add(parseCard(cardStr));
+        }
+        return cards;
     }
 
     private static Card parseCard(String cardStr) {
@@ -110,15 +112,21 @@ public class Main {
             case "bottom_card" -> System.out.println(deck.bottomCard());
             case "shuffle" -> {
                 deck.shuffle();
-                deck.getCards().forEach(System.out::println);
+                for (Card card : deck.getCards()) {
+                    System.out.println(card);
+                }
             }
             case "sort" -> {
                 deck.sort();
-                deck.getCards().forEach(System.out::println);
+                for (Card card : deck.getCards()) {
+                    System.out.println(card);
+                }
             }
             case "deal" -> {
                 Hand hand = deck.deal();
-                hand.getCards().forEach(System.out::println);
+                for (Card card : hand.getCards()) {
+                    System.out.println(card);
+                }
             }
             default -> throw new IllegalArgumentException("Unknown operation");
         }
