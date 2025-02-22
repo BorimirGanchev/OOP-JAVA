@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class SmartHomeManager {
     private static SmartHomeManager instance;
     private List<SmartDevice> devices = new ArrayList<>();

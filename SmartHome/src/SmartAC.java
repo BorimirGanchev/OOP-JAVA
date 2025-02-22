@@ -8,7 +8,7 @@ class SmartAC implements SmartDevice {
     }
 
     public void turnOn() {
-        System.out.println("SmartAC is ON at " + temperature + "°C in " + mode + " mode.");
+        System.out.println("SmartAC is ON at " + temperature + " in " + mode + " mode.");
     }
 
     public String toString() { return "SmartAC[temperature=" + temperature + ", mode=" + mode + "]"; }
